@@ -1,0 +1,16 @@
+#story_area {
+  background-color: #333;
+  color: #eee;
+}
+
+.generator-box {
+  border: 1px solid #000;
+}
+
+.container {
+		display: flex;
+}
+
+.fill {
+		flex: 1;
+}
