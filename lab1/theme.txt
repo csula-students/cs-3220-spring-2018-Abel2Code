@@ -1,0 +1,15 @@
+Theme:
+# Code clicker
+
+Resource:
+* Line of Code
+
+Generators:
+* Intern
+* Software Engineer
+* Researcher
+
+Story:
+* Make me new toys! Write some code!
+* Your code is easy to read! Keep it up!
+* The new iPhone just came out. Be the first to build an app for it.
