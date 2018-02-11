@@ -18,64 +18,63 @@
 
     <div id="resource_area">
       <div class="container">
-            <span class="fill">{Resource Name}: 1337 </span>
-            <button>Generate</button>
+            <h2 class="fill">Intern: 1337 </h2>
+            <button id="generator_button" class="rounded">Generate</button>
       </div>
     </div>
 
     <div id="purchase_area">
-      <div class="container">
+      <div class="container flex-center">
         <div class="generator-box">
-          <div>
-            <span class="generator-name class">Intern</span>
-            0
+          <div class="container">
+            <span class="fill generator-name">Intern</span>
+            <span class="small-text">0</span>
           </div>
 
           <p> Interns generate code, but not quickly.
-            Expect 1 line of code per second
+            Expect 1 line of code per second.
           </p>
 
-          <div>
-            <span class="generator-name class">5/60</span>
-            <button> 10 Resource </button>
+          <div id="generator_box_values" class="container">
+            <span class="fill generator-name small-text">5/60</span>
+            <button class="rounded" class="rounded"> 10 Resource </button>
           </div>
         </div>
 
         <div class="generator-box">
           <div>
-            <div>
-              <span class="generator-name class">Software Engineer</span>
-              0
+            <div class="container">
+              <span class="fill generator-name">Software Engineer</span>
+              <span class="small-text">0</span>
             </div>
 
             <p> Software Engineers can write code pretty quickly!
-              Expect 10 lines of code per minute.
+              Expect 10 lines of code per second.
             </p>
 
-            <div>
-              <span class="generator-name class">10/60</span>
-              <button> 100 Resource </button>
+            <div id="generator_box_values" class="container">
+              <span class="fill generator-name small-text">10/60</span>
+              <button class="rounded" class="rounded"> 100 Resource </button>
             </div>
           </div>
         </div>
 
         <div class="generator-box">
-          <div>
-            <span class="generator-name class">Researcher</span>
-            0
+          <div class="container">
+            <span class="fill generator-name">Researcher</span>
+            <span class="small-text">0</span>
           </div>
 
           <p> Researchers have a lot of experience!
             Expect 50 lines of code per second!
           </p>
 
-          <div>
-            <span class="generator-name class">20/60</span>
-            <button> 500 Resource </button>
+          <div id="generator_box_values" class="container">
+            <span class="generator-name fill small-text">20/60</span>
+            <button class="rounded"> 500 Resource </button>
           </div>
         </div>
       </div>
-
     </div>
   </main>
 </body>
