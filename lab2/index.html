@@ -4,6 +4,14 @@
 	<meta charset="UTF-8">
 	<title>Code Clicker Game</title>
   <link rel="stylesheet" href="app.css">
+	<script>
+		window.incrementalGame = {
+			 state: {
+					 counter: 0
+			 }
+		 };
+	</script>
+
 </head>
 <body>
   <header>
@@ -18,7 +26,7 @@
 
     <div id="resource_area">
       <div class="container">
-            <h2 class="fill">Intern: 1337 </h2>
+            <h2 class="fill">Lines of Code: <span id="lines_of_code">0</span> </h2>
             <button id="generator_button" class="rounded">Generate</button>
       </div>
     </div>
@@ -77,5 +85,6 @@
       </div>
     </div>
   </main>
+	<script src="app.js"></script>
 </body>
 </html>
