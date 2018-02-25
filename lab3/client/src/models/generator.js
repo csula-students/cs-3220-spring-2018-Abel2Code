@@ -19,16 +19,18 @@ export default class Generator {
 	/**
 	 * getCost computes cost exponentially based on quantity (as formula below)
 	 * xt = x0(1 + r)^t
-	 * which 
+	 * which
 	 * xt is the value of x with t quantity
 	 * x0 is base value
 	 * r is growth ratio (see constants.growthRatio)
 	 * t is the quantity
 	 * @return {number} the cost of buying another generator
 	 */
-	getCost () {
+	getCost() {
 		// TODO: implement the function according to doc above
-		return 0;
+		// BaseCost = 10
+		// return Math.pow(1 + consants.growthRatio, this.quantity)
+		return Math.round((this.baseCost * Math.pow(1 + constants.growthRatio, this.quantity)) * 100) / 100;
 	}
 
 	/**
@@ -36,8 +38,8 @@ export default class Generator {
 	 * rate * quantity
 	 * @return {number} how much this generator generates
 	 */
-	generate () {
+	generate() {
 		// TODO: implement based on doc above
-		return 0;
+		return this.rate * this.quantity;
 	}
 }
