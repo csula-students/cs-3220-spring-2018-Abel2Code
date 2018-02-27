@@ -13,7 +13,6 @@ export default function (store) {
 				if(action.type === constants.actions.INCREMENT_LOC){
 					this.counter = store.counter;
 					console.log(this.counter);
-					this.updateHtml();
 				}
 
 			});
@@ -24,7 +23,6 @@ export default function (store) {
 
 		connectedCallback () {
 			this.innerHTML = `
-				<h2 class="fill">Lines of Code: <span id="lines_of_code">${this.counter}</span> </h2>
 				<button id="generator_button" class="rounded">
 					Generate
 				</button>
@@ -42,10 +40,6 @@ export default function (store) {
 						store.dispatch(action);
           });
     }
-
-		updateHtml(){
-			this.querySelector('#lines_of_code').innerHTML = `${this.counter}`;
-		}
 
 		disconnectedCallback () {
     }

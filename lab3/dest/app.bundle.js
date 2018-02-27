@@ -760,6 +760,10 @@ class Store {
 		this.__state = initialState;
 	}
 
+	addGenerator(generator) {
+		this.__state.generators.push(generator);
+	}
+
 	/**
   * Overwrites getter for `state` variable to be READ-ONLY state through
   * deepCopy method
@@ -828,17 +832,20 @@ function reducer(state, action) {
 			state.example = action.payload;
 			return state;
 		case 'BUY_GENERATOR':
+			state.elementChanged = {};
 			state.generators.forEach(element => {
 				if (element.name === action.payload.name) {
 					const generator = new _generator2.default(element);
 					const cost = generator.getCost();
 					if (state.counter >= cost) {
 						state.counter -= cost;
-						element.quantity++;
+						state.elementChanged = {
+							"name": element.name,
+							"quantity": ++element.quantity
+						};
 					}
 				}
 			});
-			console.log(state);
 			return state;
 		case 'INCREMENT_LOC':
 			state.counter += action.payload.quantity;
@@ -873,7 +880,6 @@ exports.default = function (store) {
 				if (action.type === _constants2.default.actions.INCREMENT_LOC) {
 					this.counter = store.counter;
 					console.log(this.counter);
-					this.updateHtml();
 				}
 			});
 
@@ -883,7 +889,6 @@ exports.default = function (store) {
 
 		connectedCallback() {
 			this.innerHTML = `
-				<h2 class="fill">Lines of Code: <span id="lines_of_code">${this.counter}</span> </h2>
 				<button id="generator_button" class="rounded">
 					Generate
 				</button>
@@ -899,10 +904,6 @@ exports.default = function (store) {
 			this.querySelector('button').addEventListener('click', () => {
 				store.dispatch(action);
 			});
-		}
-
-		updateHtml() {
-			this.querySelector('#lines_of_code').innerHTML = `${this.counter}`;
 		}
 
 		disconnectedCallback() {}
@@ -931,18 +932,30 @@ exports.default = function (store) {
 		constructor() {
 			super();
 			this.store = store;
-			// TODO: render counter inner HTML based on the store state
+			this.counter = 0;
 
-			this.onStateChange = this.handleStateChange.bind(this);
-		}
+			this.store.subscribe((state, action) => {
+				// if(action.type === constants.actions.INCREMENT_LOC){
+				this.counter = state.counter;
+				this.updateHtml();
+				// } else if(action.type === constants.actionsB.BUY_GENERATOR)
+			});
 
-		handleStateChange(newState) {
-			console.log('CounterComponent#stateChange', this, newState);
-			// TODO: update inner HTML based on the new state
+			this.store.subscribe((state, action) => {
+				window.incrementalGame.state.counter = state.counter;
+			});
 		}
 
 		connectedCallback() {
-			this.store.subscribe(this.onStateChange);
+			// TODO: render counter inner HTML based on the store state
+			this.innerHTML = `
+				<h2 class="fill">Lines of Code: <span id="lines_of_code">${this.counter}</span> </h2>
+			`;
+		}
+
+		updateHtml() {
+			// TODO: update inner HTML based on the new state
+			this.querySelector('#lines_of_code').innerHTML = `${this.counter}`;
 		}
 
 		disconnectedCallback() {
@@ -950,6 +963,12 @@ exports.default = function (store) {
 		}
 	};
 };
+
+var _constants = __webpack_require__(0);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
 /* 11 */
@@ -1059,39 +1078,40 @@ exports.default = function (store) {
 			}
 
 			// TODO: render generator initial view
-			const generator = new _generator2.default(this.meta);
-			this.cost = generator.getCost();
+			this.generator = new _generator2.default(this.meta);
+			this.cost = this.generator.getCost();
+			this.name = this.generator.name;
+			this.store.addGenerator(this.generator);
 
 			// TODO: subscribe to store on change event
-			this.store.subscribe((state, action) => {
-				if (action.type === _constants2.default.actions.INCREMENT_LOC) {
-					generator.quantity++;
-					this.meta.quantity++;
-					this.cost = generator.getCost();
+			this.store.subscribe((state, action, name = this.name, gen = this) => {
+				if (action.type === _constants2.default.actions.BUY_GENERATOR && state.elementChanged.name === name) {
+					console.log("nice");
+					gen.updateValues(state.elementChanged.quantity);
+					gen.updateHtml();
 				}
 			});
 		}
 
 		connectedCallback() {
-			this.innerHTML = `<div>
+			this.innerHTML = `
 					<div class=\"container\">
-						<span class=\"fill generator-name\">${this.meta.name}</span>
-						<span class=\"small-text\">${this.meta.quantity}</span>
+						<span class=\"fill generator-name\">${this.name}</span>
+						<span class=\"small-text\" id="generator_quantity">${this.generator.quantity}</span>
 					</div>
 
-					<p> ${this.meta.description}
+					<p> ${this.generator.description}
 					</p>
 
 					<div id=\"generator_box_values\" class=\"container\">
-						<span class=\"fill generator-name small-text\">${this.meta.rate}/60</span>
-						<button class=\"rounded\" class=\"rounded\"> ${this.cost} Resource </button>
-					</div>
-				</div>`;
+						<span class=\"fill generator-name small-text\">${this.generator.rate}/60</span>
+						<button class=\"rounded\" class=\"rounded\"> <span id="generator_cost">${this.cost}</span> Resource </button>
+					</div>`;
 
 			const action = {
 				type: _constants2.default.actions.BUY_GENERATOR,
 				payload: {
-					name: name,
+					name: this.meta.name,
 					quantity: 0
 				}
 			};
@@ -1102,6 +1122,18 @@ exports.default = function (store) {
 		}
 
 		disconnectedCallback() {}
+
+		updateHtml() {
+			console.log("updating generator");
+			this.querySelector('#generator_quantity').innerHTML = `${this.generator.quantity}`;
+			this.querySelector('#generator_cost').innerHTML = `${this.cost}`;
+		}
+
+		updateValues(quantity) {
+			this.generator.quantity = quantity;
+			console.log(this.generator.quantity + " " + quantity);
+			this.cost = this.generator.getCost();
+		}
 	};
 };
 

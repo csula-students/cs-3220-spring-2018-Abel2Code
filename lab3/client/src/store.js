@@ -15,6 +15,10 @@ export default class Store {
 		this.__state = initialState;
 	}
 
+	addGenerator(generator){
+		this.__state.generators.push(generator);
+	}
+
 	/**
 	 * Overwrites getter for `state` variable to be READ-ONLY state through
 	 * deepCopy method

@@ -50,40 +50,40 @@ export default function (store) {
 			}
 
 			// TODO: render generator initial view
-			const generator = new Generator(this.meta);
-			this.cost = generator.getCost();
+			this.generator = new Generator(this.meta);
+			this.cost = this.generator.getCost();
+			this.name = this.generator.name;
+			this.store.addGenerator(this.generator);
 
 			// TODO: subscribe to store on change event
-			this.store.subscribe((state, action) =>{
-				if(action.type === constants.actions.INCREMENT_LOC){
-					generator.quantity++;
-					this.meta.quantity++;
-					this.cost = generator.getCost();
+			this.store.subscribe((state, action, name = this.name, gen = this) =>{
+				if(action.type === constants.actions.BUY_GENERATOR && state.elementChanged.name === name){
+					console.log("nice");
+					gen.updateValues(state.elementChanged.quantity);
+					gen.updateHtml();
 				}
 			});
-
 		}
 
 		connectedCallback () {
-      this.innerHTML = `<div>
+      this.innerHTML = `
 					<div class=\"container\">
-						<span class=\"fill generator-name\">${this.meta.name}</span>
-						<span class=\"small-text\">${this.meta.quantity}</span>
+						<span class=\"fill generator-name\">${this.name}</span>
+						<span class=\"small-text\" id="generator_quantity">${this.generator.quantity}</span>
 					</div>
 
-					<p> ${this.meta.description}
+					<p> ${this.generator.description}
 					</p>
 
 					<div id=\"generator_box_values\" class=\"container\">
-						<span class=\"fill generator-name small-text\">${this.meta.rate}/60</span>
-						<button class=\"rounded\" class=\"rounded\"> ${this.cost} Resource </button>
-					</div>
-				</div>`;
+						<span class=\"fill generator-name small-text\">${this.generator.rate}/60</span>
+						<button class=\"rounded\" class=\"rounded\"> <span id="generator_cost">${this.cost}</span> Resource </button>
+					</div>`;
 
 			const action = {
 				type: constants.actions.BUY_GENERATOR,
 				payload: {
-					name: name,
+					name: this.meta.name,
 					quantity: 0
 				}
 			};
@@ -96,5 +96,17 @@ export default function (store) {
 
 		disconnectedCallback () {
     }
+
+		updateHtml(){
+			console.log("updating generator");
+			this.querySelector('#generator_quantity').innerHTML = `${this.generator.quantity}`;
+			this.querySelector('#generator_cost').innerHTML = `${this.cost}`;
+		}
+
+		updateValues(quantity){
+			this.generator.quantity = quantity;
+			console.log(this.generator.quantity + " " + quantity)
+			this.cost = this.generator.getCost();
+		}
 	};
 }
