@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,35 +70,116 @@
 "use strict";
 
 
-__webpack_require__(1);
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = {
+	growthRatio: 0.05,
+	actions: {
+		EXAMPLE: 'EXAMPLE_MUTATION',
+		BUY_GENERATOR: 'BUY_GENERATOR',
+		INCREMENT_LOC: 'INCREMENT_LOC'
+	}
+};
 
-var _game = __webpack_require__(4);
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
 
-var _store = __webpack_require__(5);
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _constants = __webpack_require__(0);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+class Generator {
+	/**
+  * Create a new generator based on the meta object passing in
+  * @constructor
+  * @param {object} meta - meta object for constructing generator
+  */
+	constructor(meta) {
+		this.type = meta.type;
+		this.name = meta.name;
+		this.description = meta.description;
+		this.rate = meta.rate;
+		this.quantity = meta.quantity;
+		this.baseCost = meta.baseCost;
+		this.unlockValue = meta.unlockValue;
+	}
+
+	/**
+  * getCost computes cost exponentially based on quantity (as formula below)
+  * xt = x0(1 + r)^t
+  * which
+  * xt is the value of x with t quantity
+  * x0 is base value
+  * r is growth ratio (see constants.growthRatio)
+  * t is the quantity
+  * @return {number} the cost of buying another generator
+  */
+	getCost() {
+		// TODO: implement the function according to doc above
+		// BaseCost = 10
+		// return Math.pow(1 + consants.growthRatio, this.quantity)
+		return Math.round(this.baseCost * Math.pow(1 + _constants2.default.growthRatio, this.quantity) * 100) / 100;
+	}
+
+	/**
+  * generate computes how much this type of generator generates -
+  * rate * quantity
+  * @return {number} how much this generator generates
+  */
+	generate() {
+		// TODO: implement based on doc above
+		return this.rate * this.quantity;
+	}
+}
+exports.default = Generator;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(3);
+
+var _game = __webpack_require__(6);
+
+var _store = __webpack_require__(7);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _reducer = __webpack_require__(6);
+var _reducer = __webpack_require__(8);
 
 var _reducer2 = _interopRequireDefault(_reducer);
 
-var _button = __webpack_require__(7);
+var _button = __webpack_require__(9);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _counter = __webpack_require__(8);
+var _counter = __webpack_require__(10);
 
 var _counter2 = _interopRequireDefault(_counter);
 
-var _example = __webpack_require__(9);
+var _example = __webpack_require__(11);
 
 var _example2 = _interopRequireDefault(_example);
 
-var _generator = __webpack_require__(10);
+var _generator = __webpack_require__(12);
 
 var _generator2 = _interopRequireDefault(_generator);
 
-var _storyBook = __webpack_require__(11);
+var _storyBook = __webpack_require__(13);
 
 var _storyBook2 = _interopRequireDefault(_storyBook);
 
@@ -198,7 +279,7 @@ function main() {
 }
 
 /***/ }),
-/* 1 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function(){/*
@@ -399,10 +480,10 @@ Eg.whenReady(function(){requestAnimationFrame(function(){window.WebComponents.re
 
 //# sourceMappingURL=webcomponents-lite.js.map
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)))
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, exports) {
 
 var g;
@@ -429,7 +510,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -619,7 +700,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -653,7 +734,7 @@ function increment(state, modifier = 1) {
 }
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -724,7 +805,7 @@ function deepCopy(obj) {
 }
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -734,18 +815,42 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.default = reducer;
+
+var _generator = __webpack_require__(1);
+
+var _generator2 = _interopRequireDefault(_generator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function reducer(state, action) {
 	switch (action.type) {
 		case 'EXAMPLE_MUTATION':
 			state.example = action.payload;
 			return state;
+		case 'BUY_GENERATOR':
+			state.generators.forEach(element => {
+				if (element.name === action.payload.name) {
+					const generator = new _generator2.default(element);
+					const cost = generator.getCost();
+					if (state.counter >= cost) {
+						state.counter -= cost;
+						element.quantity++;
+					}
+				}
+			});
+			console.log(state);
+			return state;
+		case 'INCREMENT_LOC':
+			state.counter += action.payload.quantity;
+			return state;
 		default:
+			console.log(action);
 			return state;
 	}
-}
+} //import Generator from '../src/models/generator';
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -760,17 +865,58 @@ exports.default = function (store) {
 		constructor() {
 			super();
 			this.store = store;
+			this.counter = 0;
 
-			this.onStateChange = this.handleStateChange.bind(this);
+			// this.onStateChange = this.handleStateChange.bind(this);
+
+			this.store.subscribe((store, action) => {
+				if (action.type === _constants2.default.actions.INCREMENT_LOC) {
+					this.counter = store.counter;
+					console.log(this.counter);
+					this.updateHtml();
+				}
+			});
 
 			// TODO: add click event to increment counter
 			// hint: use "store.dispatch" method (see example component)
 		}
+
+		connectedCallback() {
+			this.innerHTML = `
+				<h2 class="fill">Lines of Code: <span id="lines_of_code">${this.counter}</span> </h2>
+				<button id="generator_button" class="rounded">
+					Generate
+				</button>
+			`;
+
+			const action = {
+				type: _constants2.default.actions.INCREMENT_LOC,
+				payload: {
+					quantity: 1
+				}
+			};
+
+			this.querySelector('button').addEventListener('click', () => {
+				store.dispatch(action);
+			});
+		}
+
+		updateHtml() {
+			this.querySelector('#lines_of_code').innerHTML = `${this.counter}`;
+		}
+
+		disconnectedCallback() {}
 	};
 };
 
+var _constants = __webpack_require__(0);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -806,7 +952,7 @@ exports.default = function (store) {
 };
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -854,7 +1000,7 @@ exports.default = function (store) {
 };
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -870,17 +1016,107 @@ exports.default = function (store) {
 			super();
 			this.store = store;
 
+			if (this.dataset.id == 0) {
+				this.meta = {
+					"type": "Generator",
+					"name": "Intern",
+					"description": "Interns generate code, but not quickly.",
+					"rate": 5,
+					"quantity": 0,
+					"baseCost": 10,
+					"unlockValue": 10
+				};
+			} else if (this.dataset.id == 1) {
+				this.meta = {
+					"type": "Generator",
+					"name": "Software Engineer",
+					"description": "Software Engineers can write code pretty quickly",
+					"rate": 10,
+					"quantity": 0,
+					"baseCost": 100,
+					"unlockValue": 100
+				};
+			} else if (this.dataset.id == 2) {
+				this.meta = {
+					"type": "Generator",
+					"name": "Researcher",
+					"description": "Software Engineers can write code pretty quickly",
+					"rate": 20,
+					"quantity": 0,
+					"baseCost": 500,
+					"unlockValue": 500
+				};
+			} else {
+				this.meta = {
+					"type": "Generator",
+					"name": "ERROR",
+					"description": "ERROR",
+					"rate": 0,
+					"quantity": 0,
+					"baseCost": 0,
+					"unlockValue": 0
+				};
+			}
+
 			// TODO: render generator initial view
+			const generator = new _generator2.default(this.meta);
+			this.cost = generator.getCost();
 
 			// TODO: subscribe to store on change event
-
-			// TODO: add click event
+			this.store.subscribe((state, action) => {
+				if (action.type === _constants2.default.actions.INCREMENT_LOC) {
+					generator.quantity++;
+					this.meta.quantity++;
+					this.cost = generator.getCost();
+				}
+			});
 		}
+
+		connectedCallback() {
+			this.innerHTML = `<div>
+					<div class=\"container\">
+						<span class=\"fill generator-name\">${this.meta.name}</span>
+						<span class=\"small-text\">${this.meta.quantity}</span>
+					</div>
+
+					<p> ${this.meta.description}
+					</p>
+
+					<div id=\"generator_box_values\" class=\"container\">
+						<span class=\"fill generator-name small-text\">${this.meta.rate}/60</span>
+						<button class=\"rounded\" class=\"rounded\"> ${this.cost} Resource </button>
+					</div>
+				</div>`;
+
+			const action = {
+				type: _constants2.default.actions.BUY_GENERATOR,
+				payload: {
+					name: name,
+					quantity: 0
+				}
+			};
+
+			this.querySelector('button').addEventListener('click', () => {
+				store.dispatch(action);
+			});
+		}
+
+		disconnectedCallback() {}
 	};
 };
 
+var _constants = __webpack_require__(0);
+
+var _constants2 = _interopRequireDefault(_constants);
+
+var _generator = __webpack_require__(1);
+
+var _generator2 = _interopRequireDefault(_generator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -1,4 +1,4 @@
-// PubSub is single object for publish data to multiple subscribers
+/*// PubSub is single object for publish data to multiple subscribers
 class PubSub {
     constructor () {
         this.subscribers = [];
@@ -35,4 +35,4 @@ pubSub.subscribe(newState => {
 
 pubSub.subscribe(linesOfCode => {
   document.querySelector('#lines_of_code').innerHTML = linesOfCode;
-});
+});*/

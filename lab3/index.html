@@ -26,62 +26,15 @@
 
     <div id="resource_area">
       <div class="container">
-            <h2 class="fill">Lines of Code: <span id="lines_of_code">0</span> </h2>
-            <button id="generator_button" class="rounded">Generate</button>
+            <game-button></game-button>
       </div>
     </div>
 
     <div id="purchase_area">
       <div class="container flex-center">
-        <div class="generator-box">
-          <div class="container">
-            <span class="fill generator-name">Intern</span>
-            <span class="small-text">0</span>
-          </div>
-
-          <p> Interns generate code, but not quickly.
-            Expect 1 line of code per second.
-          </p>
-
-          <div id="generator_box_values" class="container">
-            <span class="fill generator-name small-text">5/60</span>
-            <button class="rounded" class="rounded"> 10 Resource </button>
-          </div>
-        </div>
-
-        <div class="generator-box">
-          <div>
-            <div class="container">
-              <span class="fill generator-name">Software Engineer</span>
-              <span class="small-text">0</span>
-            </div>
-
-            <p> Software Engineers can write code pretty quickly!
-              Expect 10 lines of code per second.
-            </p>
-
-            <div id="generator_box_values" class="container">
-              <span class="fill generator-name small-text">10/60</span>
-              <button class="rounded" class="rounded"> 100 Resource </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="generator-box">
-          <div class="container">
-            <span class="fill generator-name">Researcher</span>
-            <span class="small-text">0</span>
-          </div>
-
-          <p> Researchers have a lot of experience!
-            Expect 50 lines of code per second!
-          </p>
-
-          <div id="generator_box_values" class="container">
-            <span class="generator-name fill small-text">20/60</span>
-            <button class="rounded"> 500 Resource </button>
-          </div>
-        </div>
+        <game-generator data-id="0"></game-generator>
+				<game-generator data-id="1"></game-generator>
+				<game-generator data-id="2"></game-generator>
       </div>
     </div>
   </main>

@@ -1,39 +1,96 @@
+import constants from '../constants';
+import Generator from '../models/generator';
+
 export default function (store) {
 	return class GeneratorComponent extends window.HTMLElement {
 		constructor () {
 			super();
 			this.store = store;
 
+			if(this.dataset.id == 0){
+				this.meta = {
+					"type": "Generator",
+					"name": "Intern",
+					"description": "Interns generate code, but not quickly.",
+					"rate": 5,
+					"quantity": 0,
+					"baseCost": 10,
+					"unlockValue": 10
+				}
+			} else if(this.dataset.id == 1){
+				this.meta = {
+					"type": "Generator",
+					"name": "Software Engineer",
+					"description": "Software Engineers can write code pretty quickly",
+					"rate": 10,
+					"quantity": 0,
+					"baseCost": 100,
+					"unlockValue": 100
+				}
+			} else if(this.dataset.id == 2){
+				this.meta = {
+					"type": "Generator",
+					"name": "Researcher",
+					"description": "Software Engineers can write code pretty quickly",
+					"rate": 20,
+					"quantity": 0,
+					"baseCost": 500,
+					"unlockValue": 500
+				}
+			} else {
+				this.meta = {
+					"type": "Generator",
+					"name": "ERROR",
+					"description": "ERROR",
+					"rate": 0,
+					"quantity": 0,
+					"baseCost": 0,
+					"unlockValue": 0
+				}
+			}
+
 			// TODO: render generator initial view
+			const generator = new Generator(this.meta);
+			this.cost = generator.getCost();
 
 			// TODO: subscribe to store on change event
-
-			// TODO: add click event
+			this.store.subscribe((state, action) =>{
+				if(action.type === constants.actions.INCREMENT_LOC){
+					generator.quantity++;
+					this.meta.quantity++;
+					this.cost = generator.getCost();
+				}
+			});
 
 		}
 
 		connectedCallback () {
-			const name = this.dataset.name;
-      const message = this.dataset.message;
-      this.innerHTML = '
-				<div>
-					<div class="container">
-						<span class="fill generator-name">${name}</span>
-						<span class="small-text">0</span>
+      this.innerHTML = `<div>
+					<div class=\"container\">
+						<span class=\"fill generator-name\">${this.meta.name}</span>
+						<span class=\"small-text\">${this.meta.quantity}</span>
 					</div>
 
-					<p> ${name}
+					<p> ${this.meta.description}
 					</p>
 
-					<div id="generator_box_values" class="container">
-						<span class="fill generator-name small-text">10/60</span>
-						<button class="rounded" class="rounded"> 100 Resource </button>
+					<div id=\"generator_box_values\" class=\"container\">
+						<span class=\"fill generator-name small-text\">${this.meta.rate}/60</span>
+						<button class=\"rounded\" class=\"rounded\"> ${this.cost} Resource </button>
 					</div>
-				</div>
-      ';
+				</div>`;
+
+			const action = {
+				type: constants.actions.BUY_GENERATOR,
+				payload: {
+					name: name,
+					quantity: 0
+				}
+			};
+
       this.querySelector('button')
           .addEventListener('click', () => {
-              console.log(this);
+						store.dispatch(action);
           });
     }
 

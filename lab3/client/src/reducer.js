@@ -17,6 +17,10 @@ export default function reducer (state, action) {
 				}
 			}
 		});
+		console.log(state);
+		return state;
+	case 'INCREMENT_LOC':
+		state.counter += action.payload.quantity;
 		return state;
 	default:
 		console.log(action);
