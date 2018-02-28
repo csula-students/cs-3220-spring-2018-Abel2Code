@@ -12,7 +12,6 @@ export default function (store) {
 			this.store.subscribe((store, action)=>{
 				if(action.type === constants.actions.INCREMENT_LOC){
 					this.counter = store.counter;
-					console.log(this.counter);
 				}
 
 			});

@@ -1,7 +1,7 @@
 {
-  "name": "client",
+  "name": "incrementalGame-framework-client",
   "version": "1.0.0",
-  "description": "",
+  "description": "An incremental game famework front end app",
   "main": "src/app.js",
   "directories": {
     "test": "test"

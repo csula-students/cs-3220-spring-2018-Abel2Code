@@ -832,17 +832,13 @@ function reducer(state, action) {
 			state.example = action.payload;
 			return state;
 		case 'BUY_GENERATOR':
-			state.elementChanged = {};
 			state.generators.forEach(element => {
 				if (element.name === action.payload.name) {
 					const generator = new _generator2.default(element);
 					const cost = generator.getCost();
 					if (state.counter >= cost) {
 						state.counter -= cost;
-						state.elementChanged = {
-							"name": element.name,
-							"quantity": ++element.quantity
-						};
+						element.quantity++;
 					}
 				}
 			});
@@ -854,7 +850,7 @@ function reducer(state, action) {
 			console.log(action);
 			return state;
 	}
-} //import Generator from '../src/models/generator';
+}
 
 /***/ }),
 /* 9 */
@@ -879,7 +875,6 @@ exports.default = function (store) {
 			this.store.subscribe((store, action) => {
 				if (action.type === _constants2.default.actions.INCREMENT_LOC) {
 					this.counter = store.counter;
-					console.log(this.counter);
 				}
 			});
 
@@ -935,10 +930,8 @@ exports.default = function (store) {
 			this.counter = 0;
 
 			this.store.subscribe((state, action) => {
-				// if(action.type === constants.actions.INCREMENT_LOC){
 				this.counter = state.counter;
 				this.updateHtml();
-				// } else if(action.type === constants.actionsB.BUY_GENERATOR)
 			});
 
 			this.store.subscribe((state, action) => {
@@ -949,7 +942,7 @@ exports.default = function (store) {
 		connectedCallback() {
 			// TODO: render counter inner HTML based on the store state
 			this.innerHTML = `
-				<h2 class="fill">Lines of Code: <span id="lines_of_code">${this.counter}</span> </h2>
+				<h2>Lines of Code: <span id="lines_of_code">${this.counter}</span> </h2>
 			`;
 		}
 
@@ -1085,10 +1078,14 @@ exports.default = function (store) {
 
 			// TODO: subscribe to store on change event
 			this.store.subscribe((state, action, name = this.name, gen = this) => {
-				if (action.type === _constants2.default.actions.BUY_GENERATOR && state.elementChanged.name === name) {
-					console.log("nice");
-					gen.updateValues(state.elementChanged.quantity);
-					gen.updateHtml();
+				if (action.type === _constants2.default.actions.BUY_GENERATOR) {
+					for (let i = 0; i < state.generators.length; i++) {
+						if (state.generators[i].name === name) {
+							gen.updateValues(state.generators[i].quantity);
+							gen.updateHtml();
+							break;
+						}
+					}
 				}
 			});
 		}
@@ -1124,14 +1121,12 @@ exports.default = function (store) {
 		disconnectedCallback() {}
 
 		updateHtml() {
-			console.log("updating generator");
 			this.querySelector('#generator_quantity').innerHTML = `${this.generator.quantity}`;
 			this.querySelector('#generator_cost').innerHTML = `${this.cost}`;
 		}
 
 		updateValues(quantity) {
 			this.generator.quantity = quantity;
-			console.log(this.generator.quantity + " " + quantity);
 			this.cost = this.generator.getCost();
 		}
 	};

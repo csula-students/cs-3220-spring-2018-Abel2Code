@@ -57,10 +57,14 @@ export default function (store) {
 
 			// TODO: subscribe to store on change event
 			this.store.subscribe((state, action, name = this.name, gen = this) =>{
-				if(action.type === constants.actions.BUY_GENERATOR && state.elementChanged.name === name){
-					console.log("nice");
-					gen.updateValues(state.elementChanged.quantity);
-					gen.updateHtml();
+				if(action.type === constants.actions.BUY_GENERATOR){
+					for(let i = 0; i < state.generators.length; i++){
+						if(state.generators[i].name === name){
+							gen.updateValues(state.generators[i].quantity);
+							gen.updateHtml();
+							break;
+						}
+					}
 				}
 			});
 		}
@@ -98,14 +102,12 @@ export default function (store) {
     }
 
 		updateHtml(){
-			console.log("updating generator");
 			this.querySelector('#generator_quantity').innerHTML = `${this.generator.quantity}`;
 			this.querySelector('#generator_cost').innerHTML = `${this.cost}`;
 		}
 
 		updateValues(quantity){
 			this.generator.quantity = quantity;
-			console.log(this.generator.quantity + " " + quantity)
 			this.cost = this.generator.getCost();
 		}
 	};
