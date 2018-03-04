@@ -77,7 +77,34 @@ function main () {
 	const initialState = {
 		example: 'Hello custom element',
 		counter: 0,
-		generators: [],
+		generators: [{
+			"type": "Generator",
+			"name": "Intern",
+			"description": "Interns generate code, but not quickly.",
+			"rate": 5,
+			"quantity": 0,
+			"baseCost": 10,
+			"unlockValue": 10
+		},
+		{
+			"type": "Generator",
+			"name": "Software Engineer",
+			"description": "Software Engineers can write code pretty quickly",
+			"rate": 10,
+			"quantity": 0,
+			"baseCost": 100,
+			"unlockValue": 100
+		},
+		{
+			"type": "Generator",
+			"name": "Researcher",
+			"description": "Software Engineers can write code pretty quickly",
+			"rate": 20,
+			"quantity": 0,
+			"baseCost": 500,
+			"unlockValue": 500
+		}
+	],
 		story: []
 	};
 

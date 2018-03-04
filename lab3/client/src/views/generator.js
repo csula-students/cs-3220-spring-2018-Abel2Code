@@ -7,47 +7,7 @@ export default function (store) {
 			super();
 			this.store = store;
 
-			if(this.dataset.id == 0){
-				this.meta = {
-					"type": "Generator",
-					"name": "Intern",
-					"description": "Interns generate code, but not quickly.",
-					"rate": 5,
-					"quantity": 0,
-					"baseCost": 10,
-					"unlockValue": 10
-				}
-			} else if(this.dataset.id == 1){
-				this.meta = {
-					"type": "Generator",
-					"name": "Software Engineer",
-					"description": "Software Engineers can write code pretty quickly",
-					"rate": 10,
-					"quantity": 0,
-					"baseCost": 100,
-					"unlockValue": 100
-				}
-			} else if(this.dataset.id == 2){
-				this.meta = {
-					"type": "Generator",
-					"name": "Researcher",
-					"description": "Software Engineers can write code pretty quickly",
-					"rate": 20,
-					"quantity": 0,
-					"baseCost": 500,
-					"unlockValue": 500
-				}
-			} else {
-				this.meta = {
-					"type": "Generator",
-					"name": "ERROR",
-					"description": "ERROR",
-					"rate": 0,
-					"quantity": 0,
-					"baseCost": 0,
-					"unlockValue": 0
-				}
-			}
+			this.meta = store.__state.generators[this.dataset.id];
 
 			// TODO: render generator initial view
 			this.generator = new Generator(this.meta);
@@ -99,6 +59,7 @@ export default function (store) {
     }
 
 		disconnectedCallback () {
+
     }
 
 		updateHtml(){
