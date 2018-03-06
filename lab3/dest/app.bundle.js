@@ -252,7 +252,31 @@ function main() {
 	const initialState = {
 		example: 'Hello custom element',
 		counter: 0,
-		generators: [],
+		generators: [{
+			"type": "Generator",
+			"name": "Intern",
+			"description": "Interns generate code, but not quickly.",
+			"rate": 5,
+			"quantity": 0,
+			"baseCost": 10,
+			"unlockValue": 10
+		}, {
+			"type": "Generator",
+			"name": "Software Engineer",
+			"description": "Software Engineers can write code pretty quickly",
+			"rate": 10,
+			"quantity": 0,
+			"baseCost": 100,
+			"unlockValue": 100
+		}, {
+			"type": "Generator",
+			"name": "Researcher",
+			"description": "Software Engineers can write code pretty quickly",
+			"rate": 20,
+			"quantity": 0,
+			"baseCost": 500,
+			"unlockValue": 500
+		}],
 		story: []
 	};
 
@@ -868,40 +892,26 @@ exports.default = function (store) {
 		constructor() {
 			super();
 			this.store = store;
-			this.counter = 0;
-
-			// this.onStateChange = this.handleStateChange.bind(this);
-
-			this.store.subscribe((store, action) => {
-				if (action.type === _constants2.default.actions.INCREMENT_LOC) {
-					this.counter = store.counter;
-				}
-			});
-
-			// TODO: add click event to increment counter
-			// hint: use "store.dispatch" method (see example component)
 		}
 
 		connectedCallback() {
-			this.innerHTML = `
-				<button id="generator_button" class="rounded">
+			this.innerHTML = `<button id="generator_button" class="rounded">
 					Generate
-				</button>
-			`;
-
-			const action = {
-				type: _constants2.default.actions.INCREMENT_LOC,
-				payload: {
-					quantity: 1
-				}
-			};
-
-			this.querySelector('button').addEventListener('click', () => {
-				store.dispatch(action);
+				</button>`;
+			this.addEventListener('click', () => {
+				this.store.dispatch({
+					type: _constants2.default.actions.INCREMENT_LOC,
+					payload: {
+						quantity: 1
+					}
+				});
 			});
 		}
 
-		disconnectedCallback() {}
+		disconnectedCallback() {
+			console.log('ExampleComponent#onDisconnectedCallback');
+			this.store.unsubscribe(this.onStateChange);
+		}
 	};
 };
 
@@ -910,6 +920,13 @@ var _constants = __webpack_require__(0);
 var _constants2 = _interopRequireDefault(_constants);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const action = {
+	type: _constants2.default.actions.INCREMENT_LOC,
+	payload: {
+		quantity: 1
+	}
+};
 
 /***/ }),
 /* 10 */
@@ -927,28 +944,19 @@ exports.default = function (store) {
 		constructor() {
 			super();
 			this.store = store;
-			this.counter = 0;
 
-			this.store.subscribe((state, action) => {
-				this.counter = state.counter;
-				this.updateHtml();
-			});
+			this.onStateChange = this.handleStateChange.bind(this);
+		}
 
-			this.store.subscribe((state, action) => {
-				window.incrementalGame.state.counter = state.counter;
-			});
+		handleStateChange(newState) {
+			this.innerHTML = `	<h2>Lines of Code: <span id="lines_of_code">${newState.counter}</span> </h2>`;
 		}
 
 		connectedCallback() {
-			// TODO: render counter inner HTML based on the store state
 			this.innerHTML = `
-				<h2>Lines of Code: <span id="lines_of_code">${this.counter}</span> </h2>
+				<h2>Lines of Code: <span id="lines_of_code">0</span> </h2>
 			`;
-		}
-
-		updateHtml() {
-			// TODO: update inner HTML based on the new state
-			this.querySelector('#lines_of_code').innerHTML = `${this.counter}`;
+			this.store.subscribe(this.onStateChange);
 		}
 
 		disconnectedCallback() {
@@ -956,12 +964,6 @@ exports.default = function (store) {
 		}
 	};
 };
-
-var _constants = __webpack_require__(0);
-
-var _constants2 = _interopRequireDefault(_constants);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
 /* 11 */
@@ -1028,72 +1030,39 @@ exports.default = function (store) {
 			super();
 			this.store = store;
 
-			if (this.dataset.id == 0) {
-				this.meta = {
-					"type": "Generator",
-					"name": "Intern",
-					"description": "Interns generate code, but not quickly.",
-					"rate": 5,
-					"quantity": 0,
-					"baseCost": 10,
-					"unlockValue": 10
-				};
-			} else if (this.dataset.id == 1) {
-				this.meta = {
-					"type": "Generator",
-					"name": "Software Engineer",
-					"description": "Software Engineers can write code pretty quickly",
-					"rate": 10,
-					"quantity": 0,
-					"baseCost": 100,
-					"unlockValue": 100
-				};
-			} else if (this.dataset.id == 2) {
-				this.meta = {
-					"type": "Generator",
-					"name": "Researcher",
-					"description": "Software Engineers can write code pretty quickly",
-					"rate": 20,
-					"quantity": 0,
-					"baseCost": 500,
-					"unlockValue": 500
-				};
-			} else {
-				this.meta = {
-					"type": "Generator",
-					"name": "ERROR",
-					"description": "ERROR",
-					"rate": 0,
-					"quantity": 0,
-					"baseCost": 0,
-					"unlockValue": 0
-				};
-			}
+			this.meta = store.state.generators[this.dataset.id];
 
-			// TODO: render generator initial view
+			// Used to Compute New Costs
 			this.generator = new _generator2.default(this.meta);
 			this.cost = this.generator.getCost();
-			this.name = this.generator.name;
-			this.store.addGenerator(this.generator);
 
 			// TODO: subscribe to store on change event
-			this.store.subscribe((state, action, name = this.name, gen = this) => {
-				if (action.type === _constants2.default.actions.BUY_GENERATOR) {
-					for (let i = 0; i < state.generators.length; i++) {
-						if (state.generators[i].name === name) {
-							gen.updateValues(state.generators[i].quantity);
-							gen.updateHtml();
-							break;
-						}
-					}
-				}
-			});
+			this.onStateChange = this.handleStateChange.bind(this);
+			this.store.subscribe(this.onStateChange);
 		}
 
 		connectedCallback() {
+			this.render();
+		}
+
+		disconnectedCallback() {
+			this.store.unsubscribe(this.onStateChange);
+		}
+
+		handleStateChange(state) {
+			for (let i = 0; i < state.generators.length; i++) {
+				if (state.generators[i].name === this.meta.name) {
+					this.updateValues(state.generators[i].quantity);
+					this.render();
+					break;
+				}
+			}
+		}
+
+		render() {
 			this.innerHTML = `
 					<div class=\"container\">
-						<span class=\"fill generator-name\">${this.name}</span>
+						<span class=\"fill generator-name\">${this.generator.name}</span>
 						<span class=\"small-text\" id="generator_quantity">${this.generator.quantity}</span>
 					</div>
 
@@ -1108,21 +1077,13 @@ exports.default = function (store) {
 			const action = {
 				type: _constants2.default.actions.BUY_GENERATOR,
 				payload: {
-					name: this.meta.name,
-					quantity: 0
+					name: this.meta.name
 				}
 			};
 
 			this.querySelector('button').addEventListener('click', () => {
 				store.dispatch(action);
 			});
-		}
-
-		disconnectedCallback() {}
-
-		updateHtml() {
-			this.querySelector('#generator_quantity').innerHTML = `${this.generator.quantity}`;
-			this.querySelector('#generator_cost').innerHTML = `${this.cost}`;
 		}
 
 		updateValues(quantity) {

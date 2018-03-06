@@ -7,32 +7,39 @@ export default function (store) {
 			super();
 			this.store = store;
 
-			this.meta = store.__state.generators[this.dataset.id];
+			this.meta = store.state.generators[this.dataset.id];
 
-			// TODO: render generator initial view
+			// Used to Compute New Costs
 			this.generator = new Generator(this.meta);
 			this.cost = this.generator.getCost();
-			this.name = this.generator.name;
-			this.store.addGenerator(this.generator);
 
 			// TODO: subscribe to store on change event
-			this.store.subscribe((state, action, name = this.name, gen = this) =>{
-				if(action.type === constants.actions.BUY_GENERATOR){
-					for(let i = 0; i < state.generators.length; i++){
-						if(state.generators[i].name === name){
-							gen.updateValues(state.generators[i].quantity);
-							gen.updateHtml();
-							break;
-						}
-					}
-				}
-			});
+			this.onStateChange = this.handleStateChange.bind(this);
+			this.store.subscribe(this.onStateChange);
 		}
 
 		connectedCallback () {
+			this.render();
+    }
+
+		disconnectedCallback () {
+			this.store.unsubscribe(this.onStateChange);
+    }
+
+		handleStateChange (state){
+			for(let i = 0; i < state.generators.length; i++){
+				if(state.generators[i].name === this.meta.name){
+					this.updateValues(state.generators[i].quantity);
+					this.render();
+										break;
+				}
+			}
+		}
+
+		render(){
       this.innerHTML = `
 					<div class=\"container\">
-						<span class=\"fill generator-name\">${this.name}</span>
+						<span class=\"fill generator-name\">${this.generator.name}</span>
 						<span class=\"small-text\" id="generator_quantity">${this.generator.quantity}</span>
 					</div>
 
@@ -47,8 +54,7 @@ export default function (store) {
 			const action = {
 				type: constants.actions.BUY_GENERATOR,
 				payload: {
-					name: this.meta.name,
-					quantity: 0
+					name: this.meta.name
 				}
 			};
 
@@ -56,15 +62,7 @@ export default function (store) {
           .addEventListener('click', () => {
 						store.dispatch(action);
           });
-    }
 
-		disconnectedCallback () {
-
-    }
-
-		updateHtml(){
-			this.querySelector('#generator_quantity').innerHTML = `${this.generator.quantity}`;
-			this.querySelector('#generator_cost').innerHTML = `${this.cost}`;
 		}
 
 		updateValues(quantity){

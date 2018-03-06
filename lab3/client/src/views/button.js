@@ -15,7 +15,9 @@ export default function (store) {
 		}
 
 		connectedCallback () {
-			this.innerHTML = '<button>Click me</button>';
+			this.innerHTML = `<button id="generator_button" class="rounded">
+					Generate
+				</button>`;
 			this.addEventListener('click', () => {
 				this.store.dispatch({
 					type: constants.actions.INCREMENT_LOC,
