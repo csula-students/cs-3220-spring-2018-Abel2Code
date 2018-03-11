@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Code Clicker Game</title>
+  <link rel="stylesheet" href="app.css">
+	<script>
+		window.incrementalGame = {
+			 state: {
+					 counter: 0
+			 }
+		 };
+	</script>
+
+</head>
+<body>
+  <header>
+  	<h1>Code Clicker</h1>
+  </header>
+  <main>
+    <game-story-book></game-story-book>
+
+    <div id="resource_area">
+      <div class="container">
+						<game-counter class="fill"></game-counter>
+            <game-button></game-button>
+      </div>
+    </div>
+
+    <div id="purchase_area">
+      <div class="container flex-center">
+        <game-generator class="generator-box" data-id="0"></game-generator>
+				<game-generator class="generator-box" data-id="1"></game-generator>
+				<game-generator class="generator-box" data-id="2"></game-generator>
+      </div>
+    </div>
+  </main>
+	<script src="app.js"></script>
+	<script src="dest/app.bundle.js"></script>
+</body>
+</html>
