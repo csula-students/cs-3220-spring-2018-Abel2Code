@@ -21,13 +21,12 @@ export function loop (store) {
 					payload: counter
 				});
 
-	// TODO: triggers stories from story to display state if they are passed
+	// triggers stories from story to display state if they are passed
 	//       the `triggeredAt` points
 	// hint: use store.dispatch to send event for changing events state
 	// We could also subscribe somewhere else but every second is fine to check this.
 	store.dispatch({
 		type: constants.actions.CHECK_STORY
-
 	});
 	// recursively calls loop method every second
 	setTimeout(loop.bind(this, store), interval);

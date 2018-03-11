@@ -779,13 +779,12 @@ function loop(store) {
 		payload: counter
 	});
 
-	// TODO: triggers stories from story to display state if they are passed
+	// triggers stories from story to display state if they are passed
 	//       the `triggeredAt` points
 	// hint: use store.dispatch to send event for changing events state
 	// We could also subscribe somewhere else but every second is fine to check this.
 	store.dispatch({
 		type: _constants2.default.actions.CHECK_STORY
-
 	});
 	// recursively calls loop method every second
 	setTimeout(loop.bind(this, store), interval);
@@ -953,7 +952,7 @@ class Story {
   * @return {boolean} if this story is unlockable
   */
 	isUnlockYet(value) {
-		// TODO: implement based on doc
+		// implement based on doc
 		return this.triggeredAt <= value;
 	}
 
@@ -961,7 +960,7 @@ class Story {
   * unlock simply unlock the story to visible state
   */
 	unlock() {
-		// TODO: change the story state to "visible"
+		// change the story state to "visible"
 		this.state = "visible";
 	}
 }
@@ -1204,36 +1203,43 @@ exports.default = function (store) {
 			super();
 			this.store = store;
 
+			// Keeps track of which stories are visible (Only works if stories are
+			// in order of increasing triggeredAt in app.js)
+			this.statePos = 0;
+
 			this.onStateChange = this.handleStateChange.bind(this);
 		}
 
 		handleStateChange(state) {
-			// TODO: display story based on the state "resource" and "stories"
-			console.log(state);
-			if (true) {
-				let arr = [];
-				for (let i = 0; i < state.generators.length; i++) {
-					if (state.story[i].state === "visible") {
-						arr.push(state.story[i]);
-					}
+			// display story based on the state "resource" and "stories";
+			let arr = [];
+			for (let i = this.statePos; i < state.generators.length; i++) {
+				if (state.story[i].state === "visible") {
+					this.statePos++;
+					arr.push(state.story[i]);
+				} else {
+					break;
 				}
-				this.render(arr);
 			}
+			this.render(arr);
 		}
 
 		connectedCallback() {
-			this.render([]);
+			this.initialRender();
 			this.store.subscribe(this.onStateChange);
 		}
 
 		// initial DOM rendering of story itself
-		render(arr) {
+		initialRender() {
 			this.innerHTML = `
 				<div id="story_area">
 
 				</div>
 			`;
+		}
 
+		// DOM render updating of story
+		render(arr) {
 			arr.forEach(element => {
 				let inner = document.querySelector('div').innerHTML += "<p>" + element.name + "</p>";
 			});
