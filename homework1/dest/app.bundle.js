@@ -1241,7 +1241,7 @@ exports.default = function (store) {
 		// DOM render updating of story
 		render(arr) {
 			arr.forEach(element => {
-				let inner = document.querySelector('div').innerHTML += "<p>" + element.name + "</p>";
+				let inner = document.querySelector('div').innerHTML += "<p>" + element.name + "<span class=\"story-description\">" + element.description + "</span></p>";
 			});
 		}
 
