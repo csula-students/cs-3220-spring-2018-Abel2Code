@@ -65,7 +65,7 @@
               <td>${event.description}</td>
               <td>${event.triggerAt}</td>
               <td>
-                <a href='../admin/events/edit?id=${event.getId()}'>Edit</a>|<a href='../admin/events/delete?id=${event.getId()}'>Delete</a>
+                <a href='../admin/events/edit?id=${event.id}'>Edit</a>|<a href='../admin/events/delete?id=${event.id}'>Delete</a>
               </td>
             </tr>
           </c:forEach>
