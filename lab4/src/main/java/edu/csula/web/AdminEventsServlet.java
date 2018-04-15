@@ -55,8 +55,20 @@ public class AdminEventsServlet extends HttpServlet {
 		//Int triggerAt = Integer.parseInt(triggerAtIn);
 
 		Collection<Event> events = new EventsDAOImpl(getServletContext()).getAll();
+		Object[] tempArr = events.toArray();
+		int id = -1;
+		for(int i = 0; i < tempArr.length; i++) {
+			Event event = (Event) tempArr[i];
+			if(event.getId() != i){
+				id = i;
+				break;
+			}
+		}
+		if(id == -1){
+			id = events.size();
+		}
 
-		new EventsDAOImpl(getServletContext()).add(new Event(events.size(),name,description,Integer.parseInt(triggerAtIn)));
+		new EventsDAOImpl(getServletContext()).add(new Event(id,name,description,Integer.parseInt(triggerAtIn)));
 
 
 		response.sendRedirect("../admin/events");
