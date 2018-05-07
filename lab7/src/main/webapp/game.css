@@ -1,0 +1,101 @@
+#story_area {
+  background-color: #333;
+  color: #eee;
+  padding: 0.2em 0.5em;
+  height: 20vh;
+  overflow: scroll;
+  margin: 1vw;
+}
+
+#story_area > p {
+  margin: 0px;
+  font-size: 2.5em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#story_area .story-description {
+  visibility: hidden;
+  background-color: #fff;
+  color: #000;
+  text-align: center;
+  border-radius: 20px;
+  padding: 5px 0;
+  float: right;
+}
+
+#story_area > p:hover .story-description {
+  visibility: visible;
+}
+
+#resource_area h2 {
+  font-size: 2.2em;
+  margin: 0;
+}
+#resource_area {
+  margin: 1vw;
+}
+
+.flex-center {
+  justify-content: left;
+}
+
+.generator-box {
+  border: 1px solid #000;
+  margin: 1vw;
+  font-size: 2.2em;
+  padding: 0.3em;
+}
+
+.generator-box button {
+  font-size: 0.8em;
+}
+
+.container {
+		display: flex;
+}
+
+#generator_button {
+  width: 10vw;
+  font-size: 2vw;
+
+}
+
+.fill {
+		flex: 1;
+}
+
+header > h1 {
+  font-size: 8vw;
+  margin: 0;
+}
+
+header {
+  margin: 1vw;
+}
+
+main > div {
+  margin-bottom: 0.8em;
+}
+
+button {
+  background-color: #fff;
+  border: 1px solid #000;
+}
+
+.rounded {
+  border-radius: 25px;
+}
+
+.small-text {
+  color: #999;
+  /* font-size: 0.5em; */
+}
+
+#generator_box_values {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* flex-flow:column wrap */
