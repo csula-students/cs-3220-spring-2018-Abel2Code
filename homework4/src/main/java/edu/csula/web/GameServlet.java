@@ -18,6 +18,9 @@ import edu.csula.storage.mysql.EventsDAOImpl;
 import edu.csula.storage.EventsDAO;
 import edu.csula.models.Event;
 
+import edu.csula.storage.servlet.GameNameDaoImpl;
+import edu.csula.storage.GameNameDao;
+
 import edu.csula.models.State;
 
 import com.google.gson.Gson;
@@ -35,12 +38,15 @@ public class GameServlet extends HttpServlet {
 
 		Collection<Event> events = new EventsDAOImpl(new Database()).getAll();
 
+		GameNameDaoImpl gameNameDao = GameNameDaoImpl.getInstance();
+
 		GsonBuilder builder = new GsonBuilder();
   	Gson gson = builder.create();
     String state = gson.toJson(new State(generators, events));
 		System.out.println(state);
 		request.setAttribute("state", state);
 		request.setAttribute("generatorLast", generators.size() - 1);
+		request.setAttribute("gameName", gameNameDao.getName());
 		request.getRequestDispatcher("./WEB-INF/game.jsp").forward(request, response);
 	}
 

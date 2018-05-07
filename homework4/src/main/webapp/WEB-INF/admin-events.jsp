@@ -11,7 +11,7 @@
 <body>
   <h1>Incremental Game Framework</h1>
   <nav>
-    <a href="admin-info.html">Game Information</a>
+    <a href="./information">Game Information</a>
     |
     <a href="./generators">Generators</a>
     |

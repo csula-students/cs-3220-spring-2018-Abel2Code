@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Code Clicker Game</title>
+	<title>${gameName} Game</title>
   <link rel="stylesheet" href="game.css">
     <script>
       state = ${state};
@@ -22,7 +22,7 @@
 </head>
 <body>
   <header>
-  	<h1>Code Clicker</h1>
+  	<h1>${gameName}</h1>
   </header>
   <main>
     <game-story-book></game-story-book>
